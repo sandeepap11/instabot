@@ -1,0 +1,19 @@
+# secrets
+.env
+
+# generated images (can get large)
+generated_images/
+
+# python
+venv/
+__pycache__/
+*.pyc
+
+# db
+*.db
+
+# comfyui workflow (optional, up to you)
+# config/workflow_api.json
+
+# Mac
+.DS_Store
