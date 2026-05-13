@@ -77,3 +77,7 @@ def check_token_validity() -> bool:
     print(
         f"[Instagram] Token valid. Account: {data.get('name', data.get('id'))}")
     return True
+
+
+if __name__ == "__main__":
+    check_token_validity()

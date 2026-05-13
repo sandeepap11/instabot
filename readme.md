@@ -1,13 +1,16 @@
 # InstaBot — AI Instagram Pipeline
 
-# Quick start
+InstaBot is a local AI-powered Instagram content pipeline that runs entirely on your machine. It scrapes trending headlines from niche RSS feeds, uses a local LLM (Qwen3 via Ollama) to generate atmospheric image prompts inspired by those headlines, and passes them to ComfyUI to generate stunning AI images. Each post goes through a human approval step via a clean local web UI before anything reaches Instagram — so you stay in control. Approved posts are served via an ngrok tunnel and published directly to Instagram through the Graph API. The whole pipeline runs on a daily schedule, giving you a hands-off content machine that still keeps you in the loop.
 
-- Note: Instagram posting not supported yet. But the app can generate a post which can be viewed on approval UI.
+Stack: Python · Ollama (Qwen3) · ComfyUI (DreamShaper XL) · Flask · SQLite · ngrok · Instagram Graph API
+
+# Quick start
 
 ## Virtual Environment
 
 python3 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
 
 ## Run Ollama
 
@@ -22,7 +25,13 @@ python main.py --force-fp16 --lowvram
 
 python app/scheduler.py
 
-# Run pipeline (for Image generation on demand)
+# Kill processes if access denied error on browser and retry
+
+lsof -ti:5001 | xargs kill -9
+
+--
+
+# Run pipeline (only for Image generation on demand)
 
 python app/pipeline.py
 

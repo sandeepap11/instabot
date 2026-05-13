@@ -18,6 +18,8 @@ from ngrok_host import get_public_image_url, start_image_server, start_tunnel
 import sys
 import os
 
+import subprocess
+
 # Make sure imports work from root
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -62,6 +64,11 @@ def start_approval_ui():
 
 
 if __name__ == "__main__":
+    # Kill any zombie processes on our ports before starting
+    subprocess.run("lsof -ti:5001 | xargs kill -9",
+                   shell=True, capture_output=True)
+    subprocess.run("lsof -ti:5000 | xargs kill -9",
+                   shell=True, capture_output=True)
     print("=" * 50)
     print("  InstaBot Scheduler Starting")
     print("=" * 50)
