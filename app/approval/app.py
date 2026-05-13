@@ -84,5 +84,12 @@ def check_token():
     return redirect(url_for("review"))
 
 
+@app.route("/unapprove/<post_id>")
+def unapprove(post_id):
+    update_status(post_id, "pending")
+    flash("↩️ Post moved back to pending.", "info")
+    return redirect(url_for("review"))
+
+
 if __name__ == "__main__":
     app.run(port=5000, debug=False)
