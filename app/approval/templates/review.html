@@ -240,6 +240,7 @@
           <div class="post-caption">{{ post.caption }}</div>
 
           <div class="actions">
+            <a href="/details/{{ post.id }}" class="btn btn-disabled" style="background:#1a2a1a; color:#4ade80;">🔍 Details</a>
             {% if post.status == 'pending' %}
               <a href="/approve/{{ post.id }}"  class="btn btn-approve">✓ Approve</a>
               <a href="/post-now/{{ post.id }}" class="btn btn-post-now">🚀 Post Now</a>

@@ -1,4 +1,4 @@
-from db import mark_posted
+from db import get_conn, mark_posted
 from ngrok_host import get_public_image_url, start_image_server, start_tunnel
 from instagram import post_image, check_token_validity
 from db import get_pending_posts, get_all_posts, update_status
@@ -89,6 +89,15 @@ def unapprove(post_id):
     update_status(post_id, "pending")
     flash("↩️ Post moved back to pending.", "info")
     return redirect(url_for("review"))
+
+
+@app.route("/details/<post_id>")
+def details(post_id):
+    with get_conn() as conn:
+        post = conn.execute(
+            "SELECT * FROM posts WHERE id = ?", (post_id,)
+        ).fetchone()
+    return render_template("details.html", post=dict(post))
 
 
 if __name__ == "__main__":

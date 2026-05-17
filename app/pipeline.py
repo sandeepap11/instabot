@@ -23,7 +23,7 @@ def run_daily_pipeline(niche: str = None):
 
     # Step 1: Generate idea/prompt
     print("[Pipeline] Step 1/3 — Generating idea...")
-    idea = generate_idea(niche)
+    idea, headlines = generate_idea(niche)
 
     # Step 2: Generate image from idea
     print("[Pipeline] Step 2/3 — Generating image...")
@@ -34,7 +34,9 @@ def run_daily_pipeline(niche: str = None):
     caption = generate_caption(idea, niche)
 
     # Step 4: Save to DB, status = pending
-    post_id = save_post(niche, idea, caption, image_path)
+    post_id = save_post(niche, idea, caption, image_path,
+                        rss_headlines=headlines,
+                        comfy_prompt=idea)  # comfy prompt IS the idea in our case
     send_approval_notification(post_id, image_path, idea, caption)
 
     print(f"\n[Pipeline] Done! Post {post_id} is waiting for your approval.")
