@@ -28,7 +28,8 @@ def build_workflow(prompt: str) -> dict:
     # temporarily add this line after the injection
     print(f"[DEBUG] Prompt injected: {workflow['6']['inputs']['text']}")
     workflow["3"]["inputs"]["seed"] = random.randint(0, 2**32)
-
+    workflow["5"]["inputs"]["width"] = int(os.getenv("IMAGE_WIDTH", 1024))
+    workflow["5"]["inputs"]["height"] = int(os.getenv("IMAGE_HEIGHT", 1024))
     return workflow
 
 
