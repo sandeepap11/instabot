@@ -85,7 +85,7 @@ Rules:
     response.raise_for_status()
     idea = response.json()["response"].strip()
     print(f"[Idea] Generated: {idea[:80]}...")
-    return idea
+    return idea, headlines
 
 
 if __name__ == "__main__":

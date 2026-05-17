@@ -21,24 +21,25 @@ def init_db():
                 image_path  TEXT NOT NULL,
                 status      TEXT NOT NULL DEFAULT 'pending',
                 created_at  TEXT NOT NULL,
-                posted_at   TEXT
+                posted_at   TEXT,
+                rss_headlines TEXT,        -- ← new
+                comfy_prompt  TEXT         -- ← new
             )
         """)
         conn.commit()
     print("[DB] Initialised.")
 
 
-def save_post(niche, prompt, caption, image_path) -> str:
+def save_post(niche, prompt, caption, image_path, rss_headlines=None, comfy_prompt=None) -> str:
     post_id = str(uuid.uuid4())
     with get_conn() as conn:
         conn.execute(
-            """INSERT INTO posts (id, niche, prompt, caption, image_path, status, created_at)
-               VALUES (?, ?, ?, ?, ?, 'pending', ?)""",
-            (post_id, niche, prompt, caption,
-             image_path, datetime.now().isoformat())
+            """INSERT INTO posts (id, niche, prompt, caption, image_path, status, created_at, rss_headlines, comfy_prompt)
+               VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?)""",
+            (post_id, niche, prompt, caption, image_path,
+             datetime.now().isoformat(), rss_headlines, comfy_prompt)
         )
         conn.commit()
-    print(f"[DB] Saved post {post_id} as pending.")
     return post_id
 
 
@@ -53,7 +54,23 @@ def get_pending_posts():
 def get_approved_posts():
     with get_conn() as conn:
         rows = conn.execute(
-            "SELECT * FROM posts WHERE status = 'approved' ORDER BY created_at ASC"
+            f"SELECT * FROM posts WHERE status = 'approved' ORDER BY created_at ASC"
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def get_published_posts():
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM posts WHERE status = 'posted' ORDER BY created_at DESC"
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def get_rejected_posts():
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM posts WHERE status = 'rejected' ORDER BY created_at DESC"
         ).fetchall()
     return [dict(r) for r in rows]
 

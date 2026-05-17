@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Post Details</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f; --surface: #1a1a1a; --border: #2a2a2a;
+      --text: #e8e8e8; --muted: #666; --green: #4ade80;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; padding: 2rem; }
+    h1 { font-family: 'DM Mono', monospace; color: var(--green); font-size: 0.9rem; margin-bottom: 2rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    .value { font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; }
+    img { width: 100%; max-width: 400px; border-radius: 8px; display: block; margin-bottom: 1.5rem; }
+    a { color: var(--green); font-family: 'DM Mono', monospace; font-size: 0.8rem; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>Post details</h1>
+  <a href="/review">← back to review</a>
+  <br/><br/>
+
+  <img src="http://localhost:5001/images/{{ post.image_path.split('/')[-1] }}" alt="Generated image"/>
+
+  <div class="card">
+    <div class="label">RSS Headlines</div>
+    <div class="value">{{ post.rss_headlines or 'Not stored' }}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Prompt sent to ComfyUI</div>
+    <div class="value">{{ post.comfy_prompt or 'Not stored' }}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Caption</div>
+    <div class="value">{{ post.caption }}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Niche</div>
+    <div class="value">{{ post.niche }}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Status</div>
+    <div class="value">{{ post.status }}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Created</div>
+    <div class="value">{{ post.created_at }}</div>
+  </div>
+</body>
+</html>

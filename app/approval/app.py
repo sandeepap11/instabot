@@ -1,7 +1,7 @@
-from db import mark_posted
+from db import get_conn, mark_posted
 from ngrok_host import get_public_image_url, start_image_server, start_tunnel
 from instagram import post_image, check_token_validity
-from db import get_pending_posts, get_all_posts, update_status
+from db import get_pending_posts, get_published_posts, get_rejected_posts, get_all_posts, update_status
 from flask import Flask, render_template, redirect, url_for, flash
 import sys
 import os
@@ -29,6 +29,18 @@ start_tunnel(port=5001)
 def review():
     posts = get_pending_posts()
     return render_template("review.html", posts=posts, section="pending")
+
+
+@app.route("/published")
+def published_view():
+    posts = get_published_posts()
+    return render_template("review.html", posts=posts, section="published")
+
+
+@app.route("/rejected")
+def rejected_view():
+    posts = get_rejected_posts()
+    return render_template("review.html", posts=posts, section="rejected")
 
 
 @app.route("/history")
@@ -89,6 +101,15 @@ def unapprove(post_id):
     update_status(post_id, "pending")
     flash("↩️ Post moved back to pending.", "info")
     return redirect(url_for("review"))
+
+
+@app.route("/details/<post_id>")
+def details(post_id):
+    with get_conn() as conn:
+        post = conn.execute(
+            "SELECT * FROM posts WHERE id = ?", (post_id,)
+        ).fetchone()
+    return render_template("details.html", post=dict(post))
 
 
 if __name__ == "__main__":
