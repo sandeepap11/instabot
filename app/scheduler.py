@@ -18,6 +18,7 @@ from ngrok_host import get_public_image_url, start_image_server, start_tunnel
 import sys
 import os
 from telegram_notify import start_callback_listener
+from morning_gen import run_morning_pipeline
 
 import subprocess
 
@@ -86,12 +87,20 @@ if __name__ == "__main__":
     start_callback_listener()
 
     # Schedule jobs
+    # Instabot
     schedule.every().day.at(GENERATE_TIME).do(job_generate)
     schedule.every().day.at(POST_TIME).do(job_post)
+
+    # Good morning
+    schedule.every().day.at(os.getenv("MORNING_TIME", "21:30")).do(run_morning_pipeline)
 
     print(f"\n[Scheduler] Generation job scheduled at {GENERATE_TIME}")
     print(f"[Scheduler] Posting job scheduled at {POST_TIME}")
     print(f"[Scheduler] Approval UI: http://localhost:5000/review")
+
+    print(
+        f"[Scheduler] Morning image job scheduled at {os.getenv('MORNING_TIME', '21:30')}")
+
     print(f"[Scheduler] Running... (Ctrl+C to stop)\n")
 
     # Keep alive
