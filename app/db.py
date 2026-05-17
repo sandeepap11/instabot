@@ -54,7 +54,23 @@ def get_pending_posts():
 def get_approved_posts():
     with get_conn() as conn:
         rows = conn.execute(
-            "SELECT * FROM posts WHERE status = 'approved' ORDER BY created_at ASC"
+            f"SELECT * FROM posts WHERE status = 'approved' ORDER BY created_at ASC"
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def get_published_posts():
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM posts WHERE status = 'posted' ORDER BY created_at DESC"
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def get_rejected_posts():
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM posts WHERE status = 'rejected' ORDER BY created_at DESC"
         ).fetchall()
     return [dict(r) for r in rows]
 

@@ -203,6 +203,8 @@
   <h1>Instabot</h1>
   <nav>
     <a href="/review"  class="{{ 'active' if section == 'pending'  else '' }}">Pending</a>
+    <a href="/published"  class="{{ 'active' if section == 'published'  else '' }}">Published</a>
+    <a href="/rejected"  class="{{ 'active' if section == 'rejected'  else '' }}">Rejected</a>
     <a href="/history" class="{{ 'active' if section == 'history'  else '' }}">History</a>
     <a href="/check-token">Check Token</a>
   </nav>
@@ -220,7 +222,7 @@
 
 <main>
   <div class="section-title">
-    {{ "Pending Approval" if section == "pending" else "Post History" }}
+    {{ "Pending Approval" if section == "pending" else "Published" if section ==  "published" else "Rejected" if section ==  "rejected" else "Post History" }}
     — {{ posts|length }} post{{ 's' if posts|length != 1 else '' }}
   </div>
 
