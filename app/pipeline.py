@@ -3,6 +3,7 @@ from caption_gen import generate_caption
 from image_gen import generate_image
 from db import save_post, init_db
 from config import NICHE
+from telegram_notify import send_approval_notification
 
 
 def run_daily_pipeline(niche: str = None):
@@ -34,6 +35,7 @@ def run_daily_pipeline(niche: str = None):
 
     # Step 4: Save to DB, status = pending
     post_id = save_post(niche, idea, caption, image_path)
+    send_approval_notification(post_id, image_path, idea, caption)
 
     print(f"\n[Pipeline] Done! Post {post_id} is waiting for your approval.")
     print("[Pipeline] Open http://localhost:5000/review to approve or reject.\n")

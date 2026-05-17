@@ -17,6 +17,7 @@ from instagram import post_image
 from ngrok_host import get_public_image_url, start_image_server, start_tunnel
 import sys
 import os
+from telegram_notify import start_callback_listener
 
 import subprocess
 
@@ -69,6 +70,7 @@ if __name__ == "__main__":
                    shell=True, capture_output=True)
     subprocess.run("lsof -ti:5000 | xargs kill -9",
                    shell=True, capture_output=True)
+
     print("=" * 50)
     print("  InstaBot Scheduler Starting")
     print("=" * 50)
@@ -81,6 +83,7 @@ if __name__ == "__main__":
 
     # Start approval UI
     start_approval_ui()
+    start_callback_listener()
 
     # Schedule jobs
     schedule.every().day.at(GENERATE_TIME).do(job_generate)
