@@ -33,6 +33,14 @@ SEASONS = {
 DAYS = ["Monday", "Tuesday", "Wednesday",
         "Thursday", "Friday", "Saturday", "Sunday"]
 
+MORNING_QUOTES = [
+    '"Every morning is a fresh beginning." — Unknown',
+    '"Today is a good day to have a great day." — Unknown',
+    '"Rise up, start fresh, see the bright opportunity in each new day." — Unknown',
+    '"The secret of getting ahead is getting started." — Mark Twain',
+    '"Believe you can and you\'re halfway there." — Theodore Roosevelt'
+]
+
 NEGATIVE_WORDS = ["violence", "death", "war", "fear",
                   "hate", "fail", "weak", "dark", "pain", "suffer"]
 
@@ -54,23 +62,19 @@ def get_season(month: int) -> str:
 
 
 def get_quote() -> str:
-    for _ in range(5):  # try up to 5 times
-        try:
-            resp = requests.get("https://zenquotes.io/api/random", timeout=10)
-            data = resp.json()[0]
-            quote = f'"{data["q"]}" — {data["a"]}'
-            if not any(word in quote.lower() for word in NEGATIVE_WORDS):
-                return quote
-        except Exception:
-            break
-    fallbacks = [
-        '"Every morning is a fresh beginning." — Unknown',
-        '"Today is a good day to have a great day." — Unknown',
-        '"Rise up, start fresh, see the bright opportunity in each new day." — Unknown',
-        '"The secret of getting ahead is getting started." — Mark Twain',
-        '"Believe you can and you\'re halfway there." — Theodore Roosevelt'
-    ]
-    return random.choice(fallbacks)
+    try:
+        resp = requests.get(
+            "https://api.quotable.io/random",
+            params={"tags": "inspirational|motivational|happiness"},
+            timeout=10
+        )
+        data = resp.json()
+        quote = f'"{data["content"]}" — {data["author"]}'
+        if not any(word in quote.lower() for word in NEGATIVE_WORDS):
+            return quote
+    except Exception:
+        pass
+    return random.choice(MORNING_QUOTES)  # fallback
 
 
 def generate_morning_prompt() -> tuple[str, str]:
@@ -82,16 +86,21 @@ def generate_morning_prompt() -> tuple[str, str]:
     quote = get_quote()
 
     STYLES = [
-        "golden desert dunes at sunrise",
-        "misty mountain peaks at dawn",
-        "tropical beach with golden light",
-        "snowy pine forest with morning sun",
-        "lavender fields at sunrise",
-        "calm ocean at golden hour",
-        "rolling green hills with morning mist",
-        "cherry blossom garden",
-        "autumn forest with sunbeams",
-        "mediterranean coastline at dawn",
+        "golden Sahara desert dunes at sunrise",
+        "misty Japanese mountain peaks at dawn",
+        "tropical Maldives beach with golden light",
+        "snowy Scandinavian pine forest with morning sun",
+        "purple lavender fields in Provence at sunrise",
+        "calm Norwegian fjord at golden hour",
+        "rolling Irish green hills with morning mist",
+        "Icelandic volcanic landscape at dawn",
+        "Tuscan countryside with cypress trees at sunrise",
+        "Amazon rainforest canopy with morning light",
+        "Mongolian steppe with dramatic sky",
+        "Scottish highlands with misty lochs",
+        "Patagonian mountains at golden hour",
+        "Kerala backwaters at sunrise",
+        "Cappadocia hot air balloons at dawn",
     ]
 
     style_hint = random.choice(STYLES)
