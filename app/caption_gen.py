@@ -8,7 +8,12 @@ Given an image description, write an Instagram caption.
 
 Rules:
 - 2-3 sentences max, punchy and evocative
-- Add 5-8 relevant hashtags at the end on a new line
+- Add 8-12 relevant hashtags at the end on a new line
+- Always include these core AI art community hashtags:
+  #aiartcommunity #generativeart #aiartwork #stablediffusion #comfyui
+- Then add 5-7 niche specific hashtags relevant to the image
+- Avoid generic tags like #art #nature #beautiful — too competitive
+- No hashtags with over 20M posts
 - No generic phrases like "check this out" or "amazing content"
 - Tone: thoughtful, aesthetic, slightly poetic
 - Output ONLY the caption + hashtags. Nothing else."""
