@@ -49,7 +49,7 @@
   },
   "7": {
     "inputs": {
-      "text": "text, watermark, blurry, low quality, ugly, deformed, duplicate, mirror, symmetrical, two suns, multiple suns, multiple moons, perfect symmetry, perfectly symmetrical, vertically symmetrical, mirrored landscape, reflected landscape",
+      "text": "text, watermark, blurry, low quality, ugly, deformed, duplicate, mirror, symmetrical, two suns, multiple suns, multiple moons, perfect symmetry, perfectly symmetrical, vertically symmetrical, mirrored landscape, reflected landscape, watermark, signature, logo, text, pexels",
       "clip": ["4", 1]
     },
     "class_type": "CLIPTextEncode",

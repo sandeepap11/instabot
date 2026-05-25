@@ -6,7 +6,7 @@ import urllib.error
 import websocket
 import requests
 from datetime import datetime
-from config import COMFY_URL, IMAGES_DIR, COMFY_CHECKPOINT
+from config import COMFY_URL, IMAGES_DIR
 import random
 
 
