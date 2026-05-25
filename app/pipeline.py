@@ -1,4 +1,4 @@
-from idea_gen import generate_idea
+from idea_gen import IDEA_SOURCE, generate_idea
 from caption_gen import generate_caption
 from image_gen import generate_image
 from db import save_post, init_db
@@ -35,8 +35,9 @@ def run_daily_pipeline(niche: str = None):
 
     # Step 4: Save to DB, status = pending
     post_id = save_post(niche, idea, caption, image_path,
-                        rss_headlines=headlines,
-                        comfy_prompt=idea)  # comfy prompt IS the idea in our case
+                        # ← add source label
+                        rss_headlines=f"[{IDEA_SOURCE}] {headlines}",
+                        comfy_prompt=idea)
     send_approval_notification(post_id, image_path, idea, caption)
 
     print(f"\n[Pipeline] Done! Post {post_id} is waiting for your approval.")
