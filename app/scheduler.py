@@ -91,7 +91,7 @@ if __name__ == "__main__":
     schedule.every().day.at(GENERATE_TIME).do(job_generate)
     schedule.every().day.at(POST_TIME).do(job_post)
 
-    # Good morning
+    # Generate the next day's good-morning image.
     schedule.every().day.at(os.getenv("MORNING_TIME", "21:30")).do(run_morning_pipeline)
 
     print(f"\n[Scheduler] Generation job scheduled at {GENERATE_TIME}")

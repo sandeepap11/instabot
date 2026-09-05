@@ -37,6 +37,12 @@ python app/pipeline.py
 
 ---
 
+## Morning Images
+
+The scheduled morning job generates the image and inspirational quote for the
+following day. It sends the completed image to Telegram with the next day's
+weekday shown in the overlay.
+
 ## Folder Structure
 
 ```
