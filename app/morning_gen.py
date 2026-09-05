@@ -3,7 +3,7 @@ import sys
 import requests
 import os
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
 import textwrap
 from dotenv import load_dotenv
@@ -65,8 +65,9 @@ def get_quote() -> str:
     try:
         resp = requests.get(
             "https://api.quotable.io/random",
-            params={"tags": "inspirational|motivational|happiness"},
-            timeout=10
+            params={"tags": "inspirational|motivational|happiness|morning"},
+            timeout=30,
+            verify=False
         )
         data = resp.json()
         quote = f'"{data["content"]}" — {data["author"]}'
@@ -77,33 +78,29 @@ def get_quote() -> str:
     return random.choice(MORNING_QUOTES)  # fallback
 
 
-def generate_morning_prompt() -> tuple[str, str]:
-    """Returns (image_prompt, quote)"""
-    now = datetime.now()
-    day = DAYS[now.weekday()]
-    season = get_season(now.month)
-    date = now.strftime("%B %d")
+def generate_morning_style() -> str:
+    prompt = """Generate a single cinematic landscape description for an AI image prompt.
+Format: "[adjective] [location] at [time of day]"
+Examples: "golden Sahara desert dunes at sunrise", "misty Japanese mountain peaks at dawn"
+Return ONLY the description, nothing else. No quotes, no explanation."""
+
+    resp = requests.post(
+        f"{OLLAMA_URL}/api/generate",
+        json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
+        timeout=30
+    )
+    return resp.json().get(
+        "response", "serene mountain valley at dawn").strip()
+
+
+def generate_morning_prompt(target_date: datetime) -> tuple[str, str]:
+    """Return an image prompt and quote for the next day's morning image."""
+    day = DAYS[target_date.weekday()]
+    season = get_season(target_date.month)
+    date = target_date.strftime("%B %d")
     quote = get_quote()
 
-    STYLES = [
-        "golden Sahara desert dunes at sunrise",
-        "misty Japanese mountain peaks at dawn",
-        "tropical Maldives beach with golden light",
-        "snowy Scandinavian pine forest with morning sun",
-        "purple lavender fields in Provence at sunrise",
-        "calm Norwegian fjord at golden hour",
-        "rolling Irish green hills with morning mist",
-        "Icelandic volcanic landscape at dawn",
-        "Tuscan countryside with cypress trees at sunrise",
-        "Amazon rainforest canopy with morning light",
-        "Mongolian steppe with dramatic sky",
-        "Scottish highlands with misty lochs",
-        "Patagonian mountains at golden hour",
-        "Kerala backwaters at sunrise",
-        "Cappadocia hot air balloons at dawn",
-    ]
-
-    style_hint = random.choice(STYLES)
+    style_hint = generate_morning_style()
 
     prompt = f"""You are a creative visual artist specialising in warm, uplifting imagery.
 
@@ -116,7 +113,7 @@ Rules:
 - Warm, uplifting, positive mood — no darkness, gloom, or melancholy
 - No text or words in the image
 - Think golden light, soft colours, nature, hope, energy
-- {day} specific: {'energising and motivating' if now.weekday() < 4 else 'relaxed and joyful' if now.weekday() == 4 else 'warm and peaceful'}
+- {day} specific: {'energising and motivating' if target_date.weekday() < 4 else 'relaxed and joyful' if target_date.weekday() == 4 else 'warm and peaceful'}
 - Describe lighting, mood, composition, and style clearly
 - Style inspiration for today: {style_hint}
 - Vary the setting dramatically each time — landscapes, seascapes, forests, deserts, mountains
@@ -253,14 +250,15 @@ def run_morning_pipeline():
     print(f"[Morning] Starting morning image pipeline...")
     print(f"{'='*50}\n")
 
-    # Temporarily override resolution for morning images
+    # Prepare tomorrow's image and keep its date consistent across the prompt and overlay.
     os.environ["IMAGE_WIDTH"] = os.getenv("MORNING_IMAGE_WIDTH", "1080")
     os.environ["IMAGE_HEIGHT"] = os.getenv("MORNING_IMAGE_HEIGHT", "1080")
 
-    image_prompt, quote = generate_morning_prompt()
+    target_date = datetime.now() + timedelta(days=1)
+    image_prompt, quote = generate_morning_prompt(target_date)
     image_path = generate_image(image_prompt)
     image_path = add_text_overlay(
-        image_path, quote, DAYS[datetime.now().weekday()])
+        image_path, quote, DAYS[target_date.weekday()])
     send_to_telegram(image_path, quote)
 
     print(f"[Morning] Done! 🌅")
