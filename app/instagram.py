@@ -42,7 +42,8 @@ def publish_container(container_id: str) -> str:
         params={
             "creation_id": container_id,
             "access_token": IG_ACCESS_TOKEN
-        }
+        },
+        timeout=100
     )
     resp.raise_for_status()
     data = resp.json()
