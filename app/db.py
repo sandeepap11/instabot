@@ -26,6 +26,14 @@ def init_db():
                 comfy_prompt  TEXT         -- ← new
             )
         """)
+
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS pexels_seen (
+                photo_id INTEGER PRIMARY KEY,
+                query TEXT,
+                seen_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
         conn.commit()
     print("[DB] Initialised.")
 
@@ -101,3 +109,15 @@ def get_all_posts():
             "SELECT * FROM posts ORDER BY created_at DESC"
         ).fetchall()
     return [dict(r) for r in rows]
+
+
+def _get_seen_ids(conn) -> set[int]:
+    rows = conn.execute("SELECT photo_id FROM pexels_seen").fetchall()
+    return {r["photo_id"] for r in rows}
+
+
+def _mark_seen(conn, photo_id: int, query: str) -> None:
+    conn.execute(
+        "INSERT OR IGNORE INTO pexels_seen (photo_id, query) VALUES (?, ?)",
+        (photo_id, query)
+    )
